@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+            text-align: center;
+        }
+
+        h2 {
+            color: #009688;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #009688;
+            color: white;
+        }
+
+        form {
+            margin-top: 20px;
+            text-align: left;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 18px;
+            color: #009688;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        input[type="number"] {
+            width: calc(100% - 24px);
+        }
+
+        button {
+            background-color: #009688;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        button:hover {
+            background-color: #00796b;
+        }
+
+        #totalAmountDisplay, #expenseForm, #expenseTable, #balance, #remainingDays {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            text-align: left;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #totalAmountDisplay p, #balance, #remainingDays {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        #remainingDays {
+            color: #009688;
+        }
+
+        #otherCategoryInput {
+            margin-top: 15px;
+        }
+
+        div.sticker {
+            background-color: #009688;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        #footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Expense Tracker</h2>
+
+<div class="sticker">
+    <p>Track your expenses and savings easily! 💸✨</p>
+</div>
+
+<div>
+    <label for="totalAmount">Enter Total Amount:</label>
+    <input type="number" id="totalAmountInput" placeholder="Enter total amount">
+    <button onclick="initializeExpenseTracker()">Start Expense Tracker</button>
+</div>
+
+<div id="totalAmountDisplay" style="display: none;">
+    <p>Total Amount: $<span id="totalAmount">0.00</span></p>
+    <p>Savings: $<span id="savings">0.00</span></p>
+</div>
+
+<!--<form id="expenseForm" style="display: none;">
+    <label>Select Type:</label>
+    <div>
+        <input type="radio" id="expenseType" name="expenseType" value="expense" checked>
+        <label for="expenseType">Expense</label>
+    </div>
+    <div>
+        <input type="radio" id="savingsType" name="expenseType" value="savings">
+        <label for="savingsType">Savings</label>
+    </div>
+
+    <label for="category">Select Category:</label>
+    <select id="category" onchange="showOtherCategory()">
+        <option value="" selected disabled>Select</option>
+        <option value="food">Food</option>
+        <option value="stationary">Stationary</option>
+        <option value="clothing">Clothing</option>
+        <option value="miscellaneous">Miscellaneous</option>
+        <option value="others">Others</option>
+    </select>
+
+    <div id="otherCategoryInput" style="display: none;">
+        <label for="otherCategory">Enter Other Category:</label>
+        <input type="text" id="otherCategory" placeholder="Enter category">
+    </div>
+
+    <label for="amount">Enter Amount:</label>
+    <input type="number" id="amount" placeholder="Enter amount">
+
+    <label for="startDate">Start Date:</label>
+    <input type="text" id="startDate" placeholder="dd/mm/yy" onfocus="(this.type='date')">
+
+    <label for="endDate">End Date:</label>
+    <input type="text" id="endDate" placeholder="dd/mm/yy" onfocus="(this.type='date')">
+
+    <button type="button" onclick="addTransaction()">Add Transaction</button>
+</form>-->
+<form id="expenseForm" style="display: none;">
+    <label>Select Type:</label>
+    <div>
+        <input type="radio" id="expenseType" name="expenseType" value="expense" checked>
+        <label for="expenseType">Expense</label>
+    </div>
+    <div>
+        <input type="radio" id="savingsType" name="expenseType" value="savings">
+        <label for="savingsType">Savings</label>
+    </div>
+
+    <label for="category">Select Category:</label>
+    <select id="category" onchange="showOtherCategory()">
+        <option value="" selected disabled>Select</option>
+        <option value="food">Food</option>
+        <option value="stationary">Stationary</option>
+        <option value="clothing">Clothing</option>
+        <option value="miscellaneous">Miscellaneous</option>
+        <option value="others">Others</option>
+    </select>
+
+    <div id="otherCategoryInput" style="display: none;">
+        <label for="otherCategory">Enter Other Category:</label>
+        <input type="text" id="otherCategory" placeholder="Enter category">
+    </div>
+
+    <!-- Input field for uploading images -->
+    <label for="image">Upload Image:</label>
+    <input type="file" id="image" accept="image/*" onchange="analyzeImage()">
+
+    <label for="amount">Enter Amount:</label>
+    <input type="number" id="amount" placeholder="Enter amount">
+
+    <label for="startDate">Start Date:</label>
+    <input type="text" id="startDate" placeholder="dd/mm/yy" onfocus="(this.type='date')">
+
+    <label for="endDate">End Date:</label>
+    <input type="text" id="endDate" placeholder="dd/mm/yy" onfocus="(this.type='date')">
+
+    <button type="button" onclick="addTransaction()">Add Transaction</button>
+</form>
+
+
+<h3>Transaction History</h3>
+<table id="expenseTable" style="display: none;">
+    <thead>
+    <tr>
+        <th>Date & Time</th>
+        <th>Type</th>
+        <th>Category</th>
+        <th>Amount</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Transactions will be added here dynamically -->
+    </tbody>
+</table>
+
+<div id="balance" style="display: none;"></div>
+<div id="remainingDays" style="display: none;"></div>
+
+<div>
+    <button onclick="predictExpense()">Predict Next Day's Expense</button>
+    <p id="predictionResult"></p>
+    <button onclick="restartExpenseTracker()">Restart Expense Tracker</button>
+    <button onclick="saveData()">Save Data</button>
+    <button onclick="clearSavedTransactions()">Clear Saved Transactions</button>
+</div>
+
+<div id="footer">
+    <p>Designed with ❤️ by YourName</p>
+</div>
+
+<script>
+    let totalAmount = 0;
+    let balanceAmount = 0;
+    let savingsAmount = 0;
+    let transactions = [];
+    const savingsLimit = 0.15;
+
+    function initializeExpenseTracker() {
+        totalAmount = parseFloat(document.getElementById("totalAmountInput").value) || 0;
+        savingsAmount = savingsLimit * totalAmount; // 15% of total amount as initial savings
+        balanceAmount = totalAmount - savingsAmount;
+
+        document.getElementById("totalAmount").innerText = totalAmount.toFixed(2);
+        document.getElementById("savings").innerText = savingsAmount.toFixed(2);
+        document.getElementById("totalAmountDisplay").style.display = "block";
+        document.getElementById("totalAmountInput").disabled = true;
+
+        document.getElementById("expenseForm").style.display = "block";
+        document.getElementById("expenseTable").style.display = "block";
+        document.getElementById("balance").style.display = "block";
+
+        updateBalance();
+    }
+
+    function showOtherCategory() {
+        const category = document.getElementById("category").value;
+        const otherCategoryInput = document.getElementById("otherCategoryInput");
+
+        if (category === "others") {
+            otherCategoryInput.style.display = "block";
+        } else {
+            otherCategoryInput.style.display = "none";
+        }
+    }
+
+    function addTransaction() {
+        const expenseType = document.querySelector('input[name="expenseType"]:checked').value;
+        const category = document.getElementById("category").value;
+        const amount = parseFloat(document.getElementById("amount").value) || 0;
+        let otherCategory = "";
+
+        if (category === "others") {
+            otherCategory = document.getElementById("otherCategory").value;
+        }
+
+        const startDate = new Date(document.getElementById("startDate").value);
+        const endDate = new Date(document.getElementById("endDate").value);
+
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+            alert("Please enter valid start and end dates.");
+            return;
+        }
+
+        const date = new Date().toLocaleString();
+        const transaction = { date, type: expenseType, category: otherCategory || category, amount, startDate, endDate };
+        transactions.push(transaction);
+
+        if (expenseType === "savings") {
+            savingsAmount += amount;
+            balanceAmount += amount;
+        } else {
+            balanceAmount -= amount;
+        }
+
+        const tableBody = document.querySelector("#expenseTable tbody");
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${date}</td><td>${expenseType}</td><td>${otherCategory || category}</td><td>${amount.toFixed(2)}</td>`;
+        tableBody.appendChild(row);
+
+        updateBalance();
+    }
+
+    function updateBalance() {
+        document.getElementById("balance").innerText = `Balance: $${balanceAmount.toFixed(2)}`;
+    }
+
+    function predictExpense() {
+        if (transactions.length === 0) {
+            alert("No transactions available to predict.");
+            return;
+        }
+
+        const now = new Date();
+        const todayTransactions = transactions.filter(t => {
+            const date = new Date(t.date);
+            return date.getDate() === now.getDate() &&
+                date.getMonth() === now.getMonth() &&
+                date.getFullYear() === now.getFullYear();
+        });
+
+        if (todayTransactions.length === 0) {
+            document.getElementById("predictionResult").innerText = "No transactions today to base a prediction on.";
+            return;
+        }
+
+        const totalTodayExpenses = todayTransactions.reduce((total, t) => {
+            return t.type === 'expense' ? total + t.amount : total;
+        }, 0);
+
+        const predictedExpense = totalTodayExpenses / todayTransactions.length;
+
+        document.getElementById("predictionResult").innerText = `Predicted expense for tomorrow: $${predictedExpense.toFixed(2)}`;
+    }
+
+    function restartExpenseTracker() {
+        document.getElementById("totalAmountInput").value = '';
+        document.getElementById("totalAmountInput").disabled = false;
+        document.getElementById("totalAmountDisplay").style.display = "none";
+        document.getElementById("expenseForm").style.display = "none";
+        document.getElementById("expenseTable").style.display = "none";
+        document.getElementById("balance").style.display = "none";
+        document.getElementById("remainingDays").style.display = "none";
+        document.getElementById("predictionResult").innerText = '';
+
+        transactions = [];
+        totalAmount = 0;
+        balanceAmount = 0;
+        savingsAmount = 0;
+
+        const tableBody = document.querySelector("#expenseTable tbody");
+        tableBody.innerHTML = '';
+    }
+
+    function saveData() {
+        localStorage.setItem('totalAmount', totalAmount);
+        localStorage.setItem('balanceAmount', balanceAmount);
+        localStorage.setItem('savingsAmount', savingsAmount);
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+        alert("Data saved!");
+    }
+
+    function clearSavedTransactions() {
+        if (confirm("Are you sure you want to clear all saved data?")) {
+            localStorage.removeItem('totalAmount');
+            localStorage.removeItem('balanceAmount');
+            localStorage.removeItem('savingsAmount');
+            localStorage.removeItem('transactions');
+            alert("Saved data cleared!");
+            restartExpenseTracker();
+        }
+    }
+
+    function loadSavedData() {
+        const savedTotalAmount = localStorage.getItem('totalAmount');
+        const savedBalanceAmount = localStorage.getItem('balanceAmount');
+        const savedSavingsAmount = localStorage.getItem('savingsAmount');
+        const savedTransactions = localStorage.getItem('transactions');
+
+        if (savedTotalAmount && savedBalanceAmount && savedSavingsAmount && savedTransactions) {
+            totalAmount = parseFloat(savedTotalAmount);
+            balanceAmount = parseFloat(savedBalanceAmount);
+            savingsAmount = parseFloat(savedSavingsAmount);
+            transactions = JSON.parse(savedTransactions);
+
+            document.getElementById("totalAmount").innerText = totalAmount.toFixed(2);
+            document.getElementById("savings").innerText = savingsAmount.toFixed(2);
+            document.getElementById("totalAmountDisplay").style.display = "block";
+            document.getElementById("totalAmountInput").disabled = true;
+
+            document.getElementById("expenseForm").style.display = "block";
+            document.getElementById("expenseTable").style.display = "block";
+            document.getElementById("balance").style.display = "block";
+
+            updateBalance();
+
+            const tableBody = document.querySelector("#expenseTable tbody");
+            transactions.forEach(t => {
+                const row = document.createElement("tr");
+                row.innerHTML = `<td>${t.date}</td><td>${t.type}</td><td>${t.category}</td><td>${t.amount.toFixed(2)}</td>`;
+                tableBody.appendChild(row);
+            });
+        }
+    }
+
+    window.onload = loadSavedData;
+</script>
+
+</body>
+</html>
